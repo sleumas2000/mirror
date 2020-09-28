@@ -1,0 +1,19 @@
+{
+  "name": "mirror",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sleumas2000/mirror.git"
+  },
+  "author": "Sam Sutherland (sleumas2000)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sleumas2000/mirror/issues"
+  },
+  "homepage": "https://github.com/sleumas2000/mirror#readme"
+}
