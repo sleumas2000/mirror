@@ -1,0 +1,25 @@
+body {
+    background-color: black;
+    color: white;
+}
+.white {
+    color: white;
+}
+.purple {
+    color: darkmagenta;
+}
+.yellow {
+    color: gold;
+}
+.cyan {
+    color: cyan;
+}
+.blue {
+    color: blue;
+}
+.green {
+    color: limegreen;
+}
+.red {
+    color: red;
+}
