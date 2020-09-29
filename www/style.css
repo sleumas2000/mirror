@@ -1,6 +1,7 @@
 body {
     background-color: black;
     color: white;
+    font-family: "Segoe UI";
 }
 .white {
     color: white;
@@ -22,4 +23,34 @@ body {
 }
 .red {
     color: red;
+}
+.grey {
+  color: grey;
+}
+.transparent {
+  opacity: 0%;
+}
+
+/***************
+* CLOCK STYLES *
+***************/
+
+#clock {
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    font-size: 14vw;
+    text-align: center;
+    font-feature-settings: 'tnum';
+    -webkit-font-feature-settings: 'tnum';
+    -moz-font-feature-settings: 'tnum';
+}
+#date {
+    font-size: 5vw;
+    text-align: center;
+    color: grey;
+}
+#clock-colon-s, #clock-s {
+    color: grey;
+    font-size: 60%;
 }
