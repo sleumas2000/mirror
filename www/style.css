@@ -2,6 +2,17 @@ body {
     background-color: black;
     color: white;
     font-family: "Segoe UI";
+    height: calc(100vh - 20vw);
+    margin: 10vw;
+}
+#page-container {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  height: 100%;
+}
+#page-container > div {
+  flex: 0 0 auto;
 }
 .white {
     color: white;
@@ -25,32 +36,53 @@ body {
     color: red;
 }
 .grey {
-  color: grey;
+    color: grey;
 }
 .transparent {
-  opacity: 0%;
+    opacity: 0%;
 }
 
 /***************
 * CLOCK STYLES *
 ***************/
 
-#clock {
-    width: 80%;
-    margin-left: 10%;
-    margin-right: 10%;
-    font-size: 14vw;
+#clock, #date, #next-event-header, #next-event-clock, #next-event-footer {
     text-align: center;
     font-feature-settings: 'tnum';
     -webkit-font-feature-settings: 'tnum';
     -moz-font-feature-settings: 'tnum';
 }
-#date {
-    font-size: 5vw;
-    text-align: center;
-    color: grey;
+#clock {
+    font-size: 14vw;
 }
 #clock-colon-s, #clock-s {
     color: grey;
     font-size: 60%;
+}
+#date {
+    font-size: 5vw;
+    color: grey;
+    margin-bottom: 5vw;
+}
+#next-event-header {
+    font-size: 2vw;
+    color: grey;
+}
+#next-event-title {
+    font-size: 3vw;
+    color: white;
+}
+#next-event-clock {
+    font-size: 10vw;
+    margin-top: -2vw;
+}
+#next-event-footer {
+    font-size: 3vw;
+    margin-bottom: 5vw;
+    /*text-transform: uppercase;*/
+}
+
+div#scrollable-container {
+  flex: 1 1 auto;
+  overflow-y: auto;
 }

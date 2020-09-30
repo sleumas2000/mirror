@@ -6,20 +6,40 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="clock">
-        <span id="clock-h">--</span
-        ><span id="clock-colon-m" class="clock-colon">:</span
-        ><span id="clock-m">--</span
-        ><span id="clock-colon-s" class="clock-colon">:</span
-        ><span id="clock-s">--</span>
+    <div id="page-container">
+        <div id="clock">
+            <span id="clock-h">--</span
+            ><span id="clock-colon-m" class="clock-colon">:</span
+            ><span id="clock-m">--</span
+            ><span id="clock-colon-s" class="clock-colon">:</span
+            ><span id="clock-s">--</span>
+        </div>
+        <div id="date">
+            <span id="date-day">Sunterday</span>
+            <span id="date-date">0</span>
+            <span id="date-month">Octember</span>
+            <span id="date-year">20XX</span>
+        </div>
+        <div id="next-event-header">
+            Next event: <span id="next-event-title">Unknown</span>
+        </div>
+        <div id="next-event-clock">
+            <span id="next-event-h">--</span
+            ><span id="next-event-colon" class="next-event-colon">:</span
+            ><span id="next-event-m">--</span>
+        </div>
+        <div id="next-event-footer">
+            <span id="next-event-location">Unknown</span>
+        </div>
+        <div id="scrollable-container">
+            <div id="buses">
+            </div>
+            <div id="tasks">
+            </div>
+            <div id="events">
+            </div>
+        </div>
     </div>
-    <div id="date">
-        <span id="date-day"></span>
-        <span id="date-date"></span>
-        <span id="date-month"></span>
-        <span id="date-year"></span>
-    </div>
-
     <script
         src="http://code.jquery.com/jquery-3.5.1.js"
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
