@@ -52,14 +52,17 @@ function updateClock() {
   $("#date-year").text(year)
 }
 
+// Async update functions
+
 let localTasks = [];
 let localEvents = [];
+let localBuses = [];
 
-function getTasks() {
+function getBuses() {
   return new Promise(function(resolve) {
     resolve([{title:"Do the thing",status:"todo",}])
-  }).then(function(remoteTasks){
-    localTasks = remoteTasks;
+  }).then(function(busTimes){
+    localBuses = busTimes;
   });
 }
 function getEvents() {
@@ -69,24 +72,47 @@ function getEvents() {
     remoteEvents.sort(function(a,b){
       return a.start.getTime()-b.start.getTime()
     });
-    currentEvents = remoteEvents;
+    localEvents = remoteEvents;
+  });
+}
+function getTasks() {
+  return new Promise(function(resolve) {
+    resolve([{title:"Do the thing",status:"todo",}])
+  }).then(function(remoteTasks){
+    localTasks = remoteTasks;
   });
 }
 
-function updateUI() {
+// UI Logic:
+
+let selection = {section: "bus", index: 0};
+
+// Redraw function
+
+function redrawUI(section = "all") {
+  if (section === "selected") section = selection.section;
+  // Redraw buses section
+
+  // Redraw events section
+
+  // Redraw tasks section
 
 }
 
 // Hooks
 
 function everyMinute() {
-  getTasks();
-  getEvents();
-  updateUI();
+  Promise.all([getTasks(),getEvents(),getBuses()]).then(function(){
+    redrawUI();
+  },function (err){
+    console.log(err);
+  })
 }
 
-function onKeypress(key) {
-  updateUI();
+function onKeypressEvent(event) {
+  let key = event.key;
+  console.log(key)
+  redrawUI();
 }
 
 // On page load
@@ -96,6 +122,8 @@ function onLoad() {
   setInterval(updateClock, 200)
   // Run the every minute script to initialise the screen
   everyMinute();
+  // Start listening for input
+  $(document).on("keydown", null, null, onKeypressEvent)
 }
 
 // Start

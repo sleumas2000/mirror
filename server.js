@@ -5,8 +5,6 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 
-let game;
-
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/www/index.html');
 });
