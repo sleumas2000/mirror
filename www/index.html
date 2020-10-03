@@ -33,6 +33,40 @@
         </div>
         <div id="scrollable-container">
             <div id="buses">
+                <div class="bus-column">
+                  <ol id="bus-list-home">
+                      <li class="bus">
+                          <div class="bus-route route-U1A">U1A</div>
+                          <div class="bus-time">15:47<span class="bus-time-seconds">:22</span></div>
+                          <div class="bus-destination"></div>
+                          <div class="bus-time-from-now">7 mins</div>
+                      </li>
+                      <li class="bus">
+                          <div class="bus-route route-U2">U2</div>
+                          <div class="bus-time">15:47</div>
+                      </li>
+                      <li class="bus">
+                          <div class="bus-route route-U3">U3</div>
+                          <div class="bus-time">15:47</div>
+                      </li>
+                      <li class="bus">
+                          <div class="bus-route route-1">1</div>
+                          <div class="bus-time">15:47</div>
+                      </li>
+                      <li class="bus">
+                          <div class="bus-route route-X18">X18</div>
+                          <div class="bus-time">15:47</div>
+                      </li>
+                  </ol>
+              </div>
+              <div class="bus-column">
+                  <ol id = "bus-list-church">
+                      <li class="bus">
+                          <div>
+                          </div>
+                      </li>
+                  </ol>
+              </div>
             </div>
             <div id="events">
             </div>
@@ -40,11 +74,11 @@
             </div>
         </div>
     </div>
-    <!--suppress SpellCheckingInspection -->
     <script
         src="http://code.jquery.com/jquery-3.5.1.js"
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
         crossorigin="anonymous"></script>
+    <script src="./stagecoach-api-query.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>

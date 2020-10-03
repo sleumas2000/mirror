@@ -15,34 +15,14 @@ body {
     height: 100%;
 }
 #page-container > div {
-     flex: 0 0 auto;
+    flex: 0 0 auto;
 }
-.white {
-    color: white;
-}
-.purple {
-    color: darkmagenta;
-}
-.yellow {
-    color: gold;
-}
-.cyan {
-    color: cyan;
-}
-.blue {
-    color: blue;
-}
-.green {
-    color: limegreen;
-}
-.red {
-    color: red;
-}
-.grey {
-    color: grey;
-}
-.transparent {
-    opacity: 0;
+div#scrollable-container {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
 }
 
 /***************
@@ -85,7 +65,135 @@ body {
     /*text-transform: uppercase;*/
 }
 
-div#scrollable-container {
-    flex: 1 1 auto;
-     overflow-y: auto;
+/***************
+* BUSES STYLES *
+***************/
+#buses {
+  flex: 1 1 33%;
+  overflow-y: hidden;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.bus-column {
+  flex: 1 1 50%;
+  height: 100%;
+  overflow: hidden;
+}
+.bus-column:not(:first-child) {
+  margin-left: 2vw
+}
+.bus-column:not(:last-child) {
+  margin-right: 2vw
+}
+
+#buses > div > ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    height: 100%;
+}
+li.bus {
+    flex: 0 0 8vw;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+}
+.bus-route {
+  font-size: 6vw;
+  font-weight: bold;
+  flex: 0 0 8vw;
+  float: left;
+  text-align: center;
+  font-family: Roadway, sans-serif;
+  text-transform: lowercase;
+}
+.bus-route.route-U1, .bus-route.route-U1A {
+  color: red;
+}
+.bus-route.route-U2 {
+  color: limegreen;
+}
+.bus-route.route-U3 {
+  color: blue;
+}
+.bus-route.route-1 {
+  color: gold;
+}
+.bus-route.route-X18, .bus-route.route-X17 {
+  color: darkmagenta;
+}
+
+.bus-time {
+  font-size: 4vw;
+  flex: 0 0 16vw;
+  float: left;
+}
+.bus-time-seconds {
+  font-size: 3vw;
+  color: grey;
+}
+.bus-destination {
+  font-size: 3vw;
+  flex: 1 1 auto;
+}
+.bus-time-from-now {
+  font-size: 4vw;
+  text-align: right;
+  flex: 0 0 auto;
+}
+
+/****************
+* EVENTS STYLES *
+****************/
+
+#events {
+  flex: 1 1 33%;
+  overflow-y: hidden;
+}
+
+/***************
+* TASKS STYLES *
+***************/
+
+#tasks {
+  flex: 1 1 33%;
+  overflow-y: hidden;
+}
+
+/**********
+* COLOURS *
+**********/
+
+.white {
+    color: white;
+}
+.purple {
+    color: darkmagenta;
+}
+.yellow {
+    color: gold;
+}
+.cyan {
+    color: cyan;
+}
+.blue {
+    color: blue;
+}
+.green {
+    color: limegreen;
+}
+.red {
+    color: red;
+}
+.grey {
+    color: grey;
+}
+.transparent {
+    opacity: 0;
 }

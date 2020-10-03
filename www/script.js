@@ -56,13 +56,37 @@ function updateClock() {
 
 let localTasks = [];
 let localEvents = [];
-let localBuses = [];
+let localBuses = {home:[],church:[]};
 
 function getBuses() {
-  return new Promise(function(resolve) {
-    resolve([{title:"Do the thing",status:"todo",}])
-  }).then(function(busTimes){
-    localBuses = busTimes;
+  return stagecoachApiQuery() // from stagecoach-api-query.js - returns Promise([Object Literal (4)])
+  .then(function([homeBusesSchedule,churchBusesSchedule,homeBusesMonitor,churchBusesMonitor]) {
+    console.log(homeBusesSchedule);
+    console.log(churchBusesSchedule);
+    console.log(homeBusesMonitor);
+    console.log(churchBusesMonitor);
+    if (homeBusesMonitor.stopMonitors.stopMonitor) {
+      [tachbrookBuses, brunswickBuses, cashmoreBuses] = homeBusesMonitor.stopMonitors.stopMonitor.map((monitor)=>monitor.monitoredCalls.monitoredCall)
+    } else {
+      [tachbrookBuses, brunswickBuses, cashmoreBuses] = [[],[],[]]
+    }
+    if (churchBusesMonitor.stopMonitors.stopMonitor) {
+      churchBuses = churchBusesMonitor.stopMonitors.stopMonitor[0].monitoredCalls.monitoredCall
+    } else {
+      churchBuses = []
+    }
+    localBuses = {home:[],church:[]};
+    for (bus of [tachbrookBuses,brunswickBuses,cashmoreBuses].flat()) {
+      if (bus.cancelled) continue;
+      localBuses.home.push({route:bus.lineRef,time:new Date(bus.expectedArrivalTime),destination:bus.destinationDisplay});
+    }
+    for (bus of churchBuses) {
+      if (bus.cancelled) continue;
+      localBuses.church.push({route:bus.lineRef,time:new Date(bus.expectedArrivalTime),destination:bus.destinationDisplay});
+    }
+    //console.log(tachbrookBuses);
+    //localBuses = busTimes;
+    //localBuses = {home:[{route:"U1A",time:new Date("2020-09-30T04:00Z"),destination:"Uni"}],church:[{route:"X17",time:new Date("2020-09-30T04:00Z"),destination:"Cov"}]}
   });
 }
 function getEvents() {
@@ -85,14 +109,68 @@ function getTasks() {
 
 // UI Logic:
 
-let selection = {section: "bus", index: 0};
+let selection = {section: "bus", index: {x: 0, y: 0}};
+let busColumn = "both"
 
 // Redraw function
 
 function redrawUI(section = "all") {
   if (section === "selected") section = selection.section;
   // Redraw buses section
-
+  if (section === "all" || section === "buses") {
+    $('#bus-list-home, #bus-list-church').empty();
+    for (bus of localBuses.home) {
+      h = bus.time.getHours().toString().padStart(2, "0")
+      m = bus.time.getMinutes().toString().padStart(2, "0")
+      s = bus.time.getSeconds().toString().padStart(2, "0")
+      timeFromNow = bus.time - new Date()
+      if (timeFromNow < 0) {
+        timeFromNow = "Departed"
+      } else if (timeFromNow < 60000){
+        timeFromNow = "Due"
+      } else {
+        timeFromNow = Math.floor(timeFromNow / 60000)
+        timeFromNow = timeFromNow.toString()+" mins"
+      }
+      if (busColumn == "both") {bus.destination = ""}
+      $('#bus-list-home').append($('<li>').addClass('bus').html(`
+      <div class="bus-route route-${bus.route}">${bus.route}</div>
+      <div class="bus-time">${h}:${m}<span class="bus-time-seconds">:${s}</span></div>
+      <div class="bus-destination">${bus.destination}</div>
+      <div class="bus-time-from-now">${timeFromNow}</div>`));
+    }
+    for (bus of localBuses.church) {
+      console.log(bus);
+      h = bus.time.getHours().toString().padStart(2, "0")
+      m = bus.time.getMinutes().toString().padStart(2, "0")
+      s = bus.time.getSeconds().toString().padStart(2, "0")
+      timeFromNow = bus.time - new Date()
+      if (timeFromNow < 0) {
+        timeFromNow = "Departed"
+      } else if (timeFromNow < 60000){
+        timeFromNow = "Due"
+      } else {
+        timeFromNow = math.floor(timeFromNow / 60000)
+        timeFromNow = timeFromNow.toString()+" mins"
+      }
+      if (busColumn == "both") {bus.destination = ""}
+      $('#bus-list-church').append($('<li>').addClass('bus').html(`
+      <div class="bus-route route-${bus.route}">${bus.route}</div>
+      <div class="bus-time">${h}:${m}<span class="bus-time-seconds">:${s}</span></div>
+      <div class="bus-destination">${bus.destination}</div>
+      <div class="bus-time-from-now">${timeFromNow}</div>`));
+    }
+    if (localBuses.home.length === 0) {
+      $('#bus-list-home').append($('<li>').addClass('bus-list-no-buses').text("No buses"))
+    } else {
+      $('#bus-list-home').append($('<li>').addClass('bus-list-end').text("End"))
+    }
+    if (localBuses.church.length === 0) {
+      $('#bus-list-church').append($('<li>').addClass('bus-list-no-buses').text("No buses"))
+    } else {
+      $('#bus-list-church').append($('<li>').addClass('bus-list-end').text("End"))
+    }
+  }
   // Redraw events section
 
   // Redraw tasks section
@@ -103,6 +181,8 @@ function redrawUI(section = "all") {
 
 function everyMinute() {
   Promise.all([getTasks(),getEvents(),getBuses()]).then(function(){
+    console.log("re-drawing");
+    console.log(localBuses);
     redrawUI();
   },function (err){
     console.log(err);
@@ -111,7 +191,7 @@ function everyMinute() {
 
 function onKeypressEvent(event) {
   let key = event.key;
-  console.log(key)
+  //console.log(key)
   redrawUI();
 }
 
