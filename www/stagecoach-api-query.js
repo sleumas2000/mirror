@@ -113,7 +113,7 @@ function stagecoachApiQuery() {
         stopMonitorQueries: {stopMonitorQuery: [
           {
             stopPointLabel: "4200F226401", // Church
-            servicesFilters: {servicesFilter: [{filter: "U1A"},{filter: "U1"},{filter: "U2"},{filter: "U3"},{filter:"X17"},{filter:"X18"}]}
+            servicesFilters: {servicesFilter: [{filter: "U1A"},{filter: "U1"},{filter: "U2"},{filter: "U3"},{filter:"X17"},{filter:"X18"},{filter:"1"}]}
           }
         ]}
       }

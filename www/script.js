@@ -84,7 +84,30 @@ function getBuses() {
       churchLiveBuses = churchBusesMonitor.stopMonitors.stopMonitor[0].monitoredCalls.monitoredCall
     } else churchLiveBuses = [];
     for (liveBus of homeLiveBuses) {
-
+      let scheduledDeparture = new Date(liveBus.aimedDepartureTime)
+      let route = liveBus.lineRef
+      for (scheduledBus of localBuses.home.filter((bus) => bus.route === route)) {
+        if (Math.abs(scheduledDeparture - scheduledBus.time) < 60000) { // If the scheduled departures are within 1 minute
+          scheduledBus.cancelled = liveBus.cancelled
+          if (liveBus.expectedDepartureTime) {
+            scheduledBus.time = new Date(liveBus.expectedDepartureTime)
+            scheduledBus.live = true
+          }
+        }
+      }
+    }
+    for (liveBus of churchLiveBuses) {
+      let scheduledDeparture = new Date(liveBus.aimedDepartureTime)
+      let route = liveBus.lineRef
+      for (scheduledBus of localBuses.church.filter((bus) => bus.route === route)) {
+        if (Math.abs(scheduledDeparture - scheduledBus.time) < 120000) { // If the scheduled departures are within 2 minutes
+          scheduledBus.cancelled = liveBus.cancelled
+          if (liveBus.expectedDepartureTime) {
+            scheduledBus.time = new Date(liveBus.expectedDepartureTime)
+            scheduledBus.live = true
+          }
+        }
+      }
     }
     /*if (homeBusesMonitor.stopMonitors.stopMonitor) {
       [tachbrookBuses, brunswickBuses, cashmoreBuses] = homeBusesMonitor.stopMonitors.stopMonitor.map((monitor)=>monitor.monitoredCalls.monitoredCall)
