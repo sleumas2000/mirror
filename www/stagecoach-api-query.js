@@ -83,7 +83,7 @@ function stagecoachApiQuery() {
         stopMonitorQueries: {stopMonitorQuery: [
           {
             stopPointLabel: "4200F205801", // Tachbrook St (S)
-            servicesFilters: {servicesFilter: [{filter: "1"},{filter: "U2"},{filter: "U3"}]}
+            servicesFilters: {servicesFilter: [{filter: "U2"},{filter: "U3"}]}
           },{
             stopPointLabel: "4200F205901", // Brunswick Inn (N)
             servicesFilters: {servicesFilter: [{filter: "1"}]}
