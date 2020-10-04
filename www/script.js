@@ -66,15 +66,25 @@ function getBuses() {
     console.log(homeBusesMonitor);
     console.log(churchBusesMonitor);
     localBuses = {home:[],church:[]};
-    if (homeBusesSchedule.Events.Event) {
+    if (homeBusesSchedule.Events && homeBusesSchedule.Events.Event) {
       for (bus of homeBusesSchedule.Events.Event) {
-        localBuses.home.push({route:bus.Trip.Service.ServiceNumber,time:new Date(bus.ScheduledDepartureTime.value),destination:bus.Trip.Service.DestinationBoard})
+        if (bus.StopLabel === "4200F205801" && bus.Trip.Service.ServiceNumber === "1") continue; // Ignore 1 to south farm from Tachbrook St stop
+        localBuses.home.push({route:bus.Trip.Service.ServiceNumber,time:new Date(bus.ScheduledDepartureTime.value),destination:bus.Trip.DestinationBoard})
       }
     }
-    if (churchBusesSchedule.Events.Event) {
+    if (churchBusesSchedule.Events && churchBusesSchedule.Events.Event) {
       for (bus of churchBusesSchedule.Events.Event) {
-        localBuses.church.push({route:bus.Trip.Service.ServiceNumber,time:new Date(bus.ScheduledDepartureTime.value),destination:bus.Trip.Service.DestinationBoard})
+        localBuses.church.push({route:bus.Trip.Service.ServiceNumber,time:new Date(bus.ScheduledDepartureTime.value),destination:bus.Trip.DestinationBoard})
       }
+    }
+    if (homeBusesMonitor.stopMonitors && homeBusesMonitor.stopMonitors.stopMonitor) {
+      homeLiveBuses = homeBusesMonitor.stopMonitors.stopMonitor.map((monitor) => (monitor.monitoredCalls && monitor.monitoredCalls.monitoredCall ? monitor.monitoredCalls.monitoredCall : [])).flat()
+    } else homeLiveBuses = [];
+    if (churchBusesMonitor.stopMonitors && churchBusesMonitor.stopMonitors.stopMonitor && churchBusesMonitor.stopMonitors.stopMonitor[0].monitoredCalls && churchBusesMonitor.stopMonitors.stopMonitor[0].monitoredCalls.monitoredCall) {
+      churchLiveBuses = churchBusesMonitor.stopMonitors.stopMonitor[0].monitoredCalls.monitoredCall
+    } else churchLiveBuses = [];
+    for (liveBus of homeLiveBuses) {
+
     }
     /*if (homeBusesMonitor.stopMonitors.stopMonitor) {
       [tachbrookBuses, brunswickBuses, cashmoreBuses] = homeBusesMonitor.stopMonitors.stopMonitor.map((monitor)=>monitor.monitoredCalls.monitoredCall)
@@ -119,74 +129,121 @@ function getTasks() {
 
 // UI Logic:
 
-let selection = {section: "bus", index: {x: 0, y: 0}};
+let selection = {section: "buses", index: {x: 0, y: 0}};
+let focus     = {section: "none", fullScreen: false}
+let isHidden  = {buses: false, events: false, tasks: false}
 let busColumn = "both"
 
-// Redraw function
+function focusSection(section) {
+  if (isHidden[section]) {
+    $('#'+section).removeClass('is-hidden');
+    $('#buses, #events, #tasks').removeClass('is-full-screen');
+    isHidden[section] = false;
+    focus.fullScreen = false;
+  } else if (focus.fullScreen && section != focus.section) {
+    $('#buses, #events, #tasks').removeClass('is-full-screen');
+    $('#'+focus.section).addClass('is-focused')
+    focus.fullScreen = false;
+  } else if (focus.section != section) {
+    $('#buses, #events, #tasks').removeClass('is-focused').removeClass('is-full-screen');
+    $('#'+section).removeClass("is-hidden").addClass("is-focused")
+    focus = {section: section, fullScreen: false}
+  } else {
+    $('#buses, #events, #tasks').removeClass("is-focused")
+    $('#'+section).removeClass("is-hidden").addClass('is-full-screen')
+    focus.fullScreen = true;
+  }
+}
+function defocusSection(section) {
+  if (section !== focus.section) {
+    $('#'+section).addClass('is-hidden').removeClass('is-full-screen').removeClass('is-focused');
+    isHidden[section] = true;
+  } else if (focus.fullScreen){
+    $('#'+section).removeClass('is-full-screen').addClass('is-focused');
+    focus.fullScreen = false;
+  } else if (!focus.fullScreen) {
+    $('#'+section).removeClass('is-full-screen').removeClass('is-focused')
+    focus = {section: "none", fullScreen: false}
+  }
+
+}
+
+// Redraw functions
+
+function redrawBuses() {
+  busListHome = $('#bus-list-home')
+  busListChurch = $('#bus-list-church')
+  busListHome.empty();
+  for (bus of localBuses.home) {
+    h = bus.time.getHours().toString().padStart(2, "0")
+    m = bus.time.getMinutes().toString().padStart(2, "0")
+    s = bus.time.getSeconds().toString().padStart(2, "0")
+    timeFromNow = bus.time - new Date()
+    if (timeFromNow < 0) {
+      timeFromNow = "Departed"
+    } else if (timeFromNow < 60000){
+      timeFromNow = "Due"
+    } else {
+      timeFromNow = Math.floor(timeFromNow / 60000)
+      timeFromNow = timeFromNow.toString()+" mins"
+    }
+    busListHome.append($('<li>').addClass('bus').html(`
+    <div class="bus-route route-${bus.route}">${bus.route}</div>
+    <div class="bus-time${bus.live? " bus-time-live" : " bus-time-scheduled"}">${h}:${m}<span class="bus-time-seconds">:${s}</span></div>
+    <div class="bus-destination${busColumn !== "home" ? " is-hidden" : ""}">${bus.destination}</div>
+    <div class="bus-time-from-now">${bus.live?timeFromNow:""}</div>`));
+  }
+  busListChurch.empty();
+  for (bus of localBuses.church) {
+    h = bus.time.getHours().toString().padStart(2, "0")
+    m = bus.time.getMinutes().toString().padStart(2, "0")
+    s = bus.time.getSeconds().toString().padStart(2, "0")
+    timeFromNow = bus.time - new Date()
+    if (timeFromNow < 0) {
+      timeFromNow = "Departed"
+    } else if (timeFromNow < 60000){
+      timeFromNow = "Due"
+    } else {
+      timeFromNow = Math.floor(timeFromNow / 60000)
+      timeFromNow = timeFromNow.toString()+" mins"
+    }
+    busListChurch.append($('<li>').addClass('bus').html(`
+    <div class="bus-route route-${bus.route}">${bus.route}</div>
+    <div class="bus-time${bus.live? " bus-time-live" : " bus-time-scheduled"}">${h}:${m}<span class="bus-time-seconds">:${s}</span></div>
+    <div class="bus-destination${busColumn !== "church" ? " is-hidden" : ""}">${bus.destination}</div>
+    <div class="bus-time-from-now">${bus.live?timeFromNow:""}</div>`));
+  }
+  if (localBuses.home.length === 0) {
+    busListHome.append($('<li>').addClass('bus-list-no-buses').text("No buses"))
+  } else {
+    busListHome.append($('<li>').addClass('bus-list-end').text("End"))
+  }
+  if (localBuses.church.length === 0) {
+    busListChurch.append($('<li>').addClass('bus-list-no-buses').text("No buses"))
+  } else {
+    busListChurch.append($('<li>').addClass('bus-list-end').text("End"))
+  }
+}
+
+function redrawEvents() {
+
+}
+
+function redrawTasks() {
+
+}
 
 function redrawUI(section = "all") {
   if (section === "selected") section = selection.section;
-  // Redraw buses section
   if (section === "all" || section === "buses") {
-    busListHome = $('#bus-list-home')
-    busListChurch = $('#bus-list-church')
-    busListHome.empty();
-    for (bus of localBuses.home) {
-      h = bus.time.getHours().toString().padStart(2, "0")
-      m = bus.time.getMinutes().toString().padStart(2, "0")
-      s = bus.time.getSeconds().toString().padStart(2, "0")
-      timeFromNow = bus.time - new Date()
-      if (timeFromNow < 0) {
-        timeFromNow = "Departed"
-      } else if (timeFromNow < 60000){
-        timeFromNow = "Due"
-      } else {
-        timeFromNow = Math.floor(timeFromNow / 60000)
-        timeFromNow = timeFromNow.toString()+" mins"
-      }
-      if (busColumn == "both") {bus.destination = ""}
-      busListHome.append($('<li>').addClass('bus').html(`
-      <div class="bus-route route-${bus.route}">${bus.route}</div>
-      <div class="bus-time${bus.live? " bus-time-live" : " bus-time-scheduled"}">${h}:${m}<span class="bus-time-seconds">:${s}</span></div>
-      <div class="bus-destination">${bus.destination}</div>
-      <div class="bus-time-from-now">${bus.live?timeFromNow:""}</div>`));
-    }
-    busListChurch.empty();
-    for (bus of localBuses.church) {
-      console.log(bus);
-      h = bus.time.getHours().toString().padStart(2, "0")
-      m = bus.time.getMinutes().toString().padStart(2, "0")
-      s = bus.time.getSeconds().toString().padStart(2, "0")
-      timeFromNow = bus.time - new Date()
-      if (timeFromNow < 0) {
-        timeFromNow = "Departed"
-      } else if (timeFromNow < 60000){
-        timeFromNow = "Due"
-      } else {
-        timeFromNow = Math.floor(timeFromNow / 60000)
-        timeFromNow = timeFromNow.toString()+" mins"
-      }
-      if (busColumn == "both") {bus.destination = ""}
-      busListChurch.append($('<li>').addClass('bus').html(`
-      <div class="bus-route route-${bus.route}">${bus.route}</div>
-      <div class="bus-time${bus.live? " bus-time-live" : " bus-time-scheduled"}">${h}:${m}<span class="bus-time-seconds">:${s}</span></div>
-      <div class="bus-destination">${bus.destination}</div>
-      <div class="bus-time-from-now">${bus.live?timeFromNow:""}</div>`));
-    }
-    if (localBuses.home.length === 0) {
-      busListHome.append($('<li>').addClass('bus-list-no-buses').text("No buses"))
-    } else {
-      busListHome.append($('<li>').addClass('bus-list-end').text("End"))
-    }
-    if (localBuses.church.length === 0) {
-      busListChurch.append($('<li>').addClass('bus-list-no-buses').text("No buses"))
-    } else {
-      busListChurch.append($('<li>').addClass('bus-list-end').text("End"))
-    }
+    redrawBuses()
   }
-  // Redraw events section
-
-  // Redraw tasks section
+  if (section === "all" || section === "events") {
+    redrawEvents()
+  }
+  if (section === "all" || section === "tasks") {
+    redrawTasks()
+  }
 
 }
 
@@ -194,8 +251,6 @@ function redrawUI(section = "all") {
 
 function everyMinute() {
   Promise.all([getTasks(),getEvents(),getBuses()]).then(function(){
-    console.log("re-drawing");
-    console.log(localBuses);
     redrawUI();
   },function (err){
     console.log(err);
@@ -204,7 +259,52 @@ function everyMinute() {
 
 function onKeypressEvent(event) {
   let key = event.key;
-  //console.log(key)
+  console.log(key);
+  // Global keys
+
+  if (key === "-") {
+    defocusSection(selection.section);
+    return;
+  } else if (key === "+") {
+    focusSection(selection.section);
+    return;
+  } else
+
+  // Selection keys
+
+  if (key === "7" || key === "Home") {
+    selection = {section: "buses", index: {x: 0, y: 0}};
+    if (isHidden["buses"] || focus.fullScreen) focusSection("buses");
+    return;
+  } else if (key === "9" || key === "PageUp") {
+    selection = {section: "events", index: {x: 0, y: 0}};
+    if (isHidden["events"] || focus.fullScreen) focusSection("events");
+    return;
+  } else if (key === "3" || key === "PageDn") {
+    selection = {section: "tasks", index: {x: 0, y: 0}};
+    if (isHidden["tasks"] || focus.fullScreen) focusSection("tasks");
+    return;
+  } else
+  // Buses
+  if (selection.section === "buses") {
+    if (key === "6" || key === "ArrowRight") {
+      if (busColumn === "both") {
+        $('#bus-column-church').addClass("is-hidden")
+        busColumn = "home"
+      } else if (busColumn === "church") {
+        $('#bus-column-home').removeClass("is-hidden")
+        busColumn = "both"
+      }
+    } else if (key === "4" || key === "ArrowLeft") {
+      if (busColumn === "both") {
+        $('#bus-column-home').addClass("is-hidden")
+        busColumn = "church"
+      } else if (busColumn === "home") {
+        $('#bus-column-church').removeClass("is-hidden")
+        busColumn = "both"
+      }
+    }
+  }
   redrawUI();
 }
 

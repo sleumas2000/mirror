@@ -23,7 +23,7 @@ function stagecoachApiQuery() {
           value: new Date().toISOString()
         },
         EarliestDepartureLeeway: "PT0M",
-        LatestDepartureLeeway: "PT180M"
+        LatestDepartureLeeway: "PT360M"
       },
       ResponseCharacteristics: {
         MaxLaterEvents: {
@@ -52,7 +52,7 @@ function stagecoachApiQuery() {
           value: new Date().toISOString()
         },
         EarliestDepartureLeeway: "PT5M",
-        LatestDepartureLeeway: "PT180M"
+        LatestDepartureLeeway: "PT360M"
       },
       ResponseCharacteristics: {
         MaxLaterEvents: {
@@ -89,7 +89,7 @@ function stagecoachApiQuery() {
             servicesFilters: {servicesFilter: [{filter: "1"}]}
           },{
             stopPointLabel: "4200F206801", // Cashmore (N)
-            servicesFilters: {servicesFilter: [{filter: "U1A"},{filter: "U1"},{filter: "U2"},{filter: "U3"}]}
+            servicesFilters: {servicesFilter: [{filter: "U1A"},{filter: "U1"}/*,{filter: "U2"},{filter: "U3"}*/]}
           }
         ]}
       }

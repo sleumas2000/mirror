@@ -24,6 +24,39 @@ div#scrollable-container {
     flex-flow: column nowrap;
     justify-content: flex-start;
     min-height: 24vw;
+    overflow: hidden;
+}
+/*#next-event {
+    overflow-y: hidden;
+    transition-property: flex, padding, margin, opacity;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.6s;
+}
+#next-event.is-hidden {
+    opacity: 0%;
+    flex: 0 1 0;
+}*/
+.section {
+    flex: 1 1 33%;
+    overflow-y: scroll;
+    transition-duration: 0.6s;
+    transition-property: padding, flex;
+    transition-timing-function: ease-in-out;
+    padding-top: 0.5vw;
+    padding-bottom: 0.5vw;
+}
+.section::-webkit-scrollbar {
+    display: none;
+}
+.section.is-focused {
+    flex: 2 0 50%;
+}
+.section.is-full-screen {
+    flex: 2 0 100%;
+}
+.section.is-hidden {
+    flex: 0 1 0%;
+    padding: 0px;
 }
 
 /***************
@@ -70,30 +103,41 @@ div#scrollable-container {
 * BUSES STYLES *
 ***************/
 #buses {
-  flex: 1 1 33%;
-  overflow-y: hidden;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    width: calc(100% + 4vw);
+    margin-left: -2vw; /* HACK: unable to use first child on .bus-column because of display:none when switching columns;*/
+    margin-right: -2vw;
 }
 
 .bus-column {
-  flex: 1 1 50%;
-  height: 100%;
-  overflow: hidden;
+    flex: 1 1 50%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    margin-left: 2vw;
+    margin-right: 2vw;
+    transition-duration: 0.6s;
+    transition-property: flex, opacity, margin;
+    transition-timing-function: ease-in;
 }
-.bus-column:not(:first-child) {
-  margin-left: 2vw
+.bus-column.is-hidden {
+    flex: 0 0 0;
+    opacity: 0;
+    transition-timing-function: ease-out;
+    margin: 0;
 }
-.bus-column:not(:last-child) {
-  margin-right: 2vw
+.bus-column::-webkit-scrollbar {
+    display: none;
 }
 .bus-list-header {
-  font-size: 3vw;
-  text-align: center;
-  color: grey;
-  margin: 0;
+    font-size: 3vw;
+    text-align: center;
+    color: grey;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .bus-list {
     list-style: none;
@@ -109,64 +153,76 @@ li.bus {
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .bus-route {
-  font-size: 6vw;
-  font-weight: bold;
-  flex: 0 0 8vw;
-  float: left;
-  text-align: center;
-  font-family: Roadway, sans-serif;
-  text-transform: lowercase;
+    font-size: 6vw;
+    font-weight: bold;
+    flex: 0 0 8vw;
+    float: left;
+    text-align: center;
+    font-family: Roadway, sans-serif;
+    text-transform: lowercase;
 }
 .bus-route.route-U1, .bus-route.route-U1A {
-  color: red;
+    color: red;
 }
 .bus-route.route-U2 {
-  color: limegreen;
+    color: limegreen;
 }
 .bus-route.route-U3 {
-  color: blue;
+    color: blue;
 }
 .bus-route.route-1 {
-  color: gold;
+    color: gold;
 }
 .bus-route.route-X18, .bus-route.route-X17 {
-  color: darkmagenta;
+    color: darkmagenta;
 }
 
 .bus-time {
-  font-size: 4vw;
-  flex: 0 0 16vw;
-  float: left;
+    font-size: 4vw;
+    flex: 0 0 16vw;
+    float: left;
 }
 .bus-time-seconds {
-  font-size: 3vw;
-  color: grey;
+    font-size: 3vw;
+    color: grey;
 }
 .bus-time-scheduled {
-  opacity: 50%;
+    opacity: 50%;
 }
 .bus-destination {
-  font-size: 3vw;
-  flex: 1 1 auto;
+    font-size: 3vw;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  /*transition-duration: 0.6s;
+  transition-property: opacity;
+  transition-timing-function: ease-in;*/
+}
+.bus-destination.is-hidden {
+    opacity: 0;
+  /*transition-timing-function: ease-out; TODO: Transition currently impossible because of the redraw*/
 }
 .bus-time-from-now {
-  font-size: 4vw;
-  text-align: right;
-  flex: 0 0 auto;
+    font-size: 4vw;
+    text-align: right;
+    flex: 0 0 auto;
 }
 .bus-list-no-buses {
-  font-size: 3vw;
-  text-align: center;
-  color: grey;
+    font-size: 3vw;
+    text-align: center;
+    color: grey;
 }
 .bus-list-end {
-  font-size: 2vw;
-  text-align: center;
-  color: grey;
-  text-transform: uppercase;
-  margin-top: -2vw;
+    font-size: 2vw;
+    text-align: center;
+    color: grey;
+    text-transform: uppercase;
+    margin-top: -2vw;
 }
 
 /****************
@@ -174,8 +230,7 @@ li.bus {
 ****************/
 
 #events {
-  flex: 1 1 33%;
-  overflow-y: hidden;
+    background-color: grey;
 }
 
 /***************
@@ -183,8 +238,6 @@ li.bus {
 ***************/
 
 #tasks {
-  flex: 1 1 33%;
-  overflow-y: hidden;
 }
 
 /**********

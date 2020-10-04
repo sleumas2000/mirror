@@ -20,31 +20,35 @@
             <span id="date-month">Octember</span>
             <span id="date-year">20XX</span>
         </div>
-        <div id="next-event-header">
-            Next event: <span id="next-event-title">Unknown</span>
-        </div>
-        <div id="next-event-clock">
-            <span id="next-event-h">--</span
-            ><span id="next-event-colon" class="next-event-colon">:</span
-            ><span id="next-event-m">--</span>
-        </div>
-        <div id="next-event-footer">
-            <span id="next-event-location">Unknown</span>
+        <div id="next-event">
+          <div id="next-event-header">
+              Next event: <span id="next-event-title">Unknown</span>
+          </div>
+          <div id="next-event-clock">
+              <span id="next-event-h">--</span
+              ><span id="next-event-colon" class="next-event-colon">:</span
+              ><span id="next-event-m">--</span>
+          </div>
+          <div id="next-event-footer">
+              <span id="next-event-location">Unknown</span>
+          </div>
         </div>
         <div id="scrollable-container">
-            <div id="buses">
-                <div class="bus-column">
-                  <h1 class="bus-list-header">From home</h1>
-                  <ol id="bus-list-home" class="bus-list"></ol>
-              </div>
-              <div class="bus-column">
-                <h1 class="bus-list-header">From the church</h1>
-                  <ol id="bus-list-church" class="bus-list"></ol>
+            <div id="buses" class="section">
+                <div id="bus-column-home" class="bus-column">
+                    <h1 class="bus-list-header">From home</h1>
+                    <ol id="bus-list-home" class="bus-list"></ol>
+                </div>
+                <div id="bus-column-church" class="bus-column">
+                    <h1 class="bus-list-header">From the church</h1>
+                    <ol id="bus-list-church" class="bus-list"></ol>
+                </div>
+            </div>
+            <div id="events" class="section">
+              <div class="event">
               </div>
             </div>
-            <div id="events">
-            </div>
-            <div id="tasks">
+            <div id="tasks" class="section">
             </div>
         </div>
     </div>
