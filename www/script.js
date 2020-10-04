@@ -342,7 +342,7 @@ function onKeypressEvent(event) {
     selection = {section: "events", index: {x: 0, y: 0}};
     if (isHidden["events"] || focus.fullScreen) focusSection("events");
     return;
-  } else if (key === "3" || key === "PageDn") {
+  } else if (key === "3" || key === "PageDown") {
     selection = {section: "tasks", index: {x: 0, y: 0}};
     if (isHidden["tasks"] || focus.fullScreen) focusSection("tasks");
     return;
