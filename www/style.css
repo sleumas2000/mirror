@@ -138,6 +138,8 @@ div#scrollable-container {
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
+    font-weight: bold;
+    position: sticky;
 }
 .bus-list {
     list-style: none;

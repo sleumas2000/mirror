@@ -8,12 +8,10 @@ const headers = {
   "X-SC-apiKey": "ukbusprodapi_7k8K536tNsPH#!",
   "X-SC-securityMethod": "API"
 }
-const emptyPromise = new Promise((r) => r(null))
+const emptyPromise = new Promise((r) => r({}))
 function stagecoachApiQuery() {
   let homeBusesSchedulePromise = fetch("https://api.stagecoachbus.com/tis/v3/stop-event-query", {
     "headers": headers,
-    "referrer": "https://www.stagecoachbus.com/bus-stop?busStop%5BGeocode%5D%5BGrid%5D%5Bvalue%5D=WGS84&busStop%5BGeocode%5D%5BLongitude%5D=-1.5291824890766799&busStop%5BGeocode%5D%5BLatitude%5D=52.278104801179374&busStop%5BName%5D=Leamington+Spa%2C+Tachbrook+Street&busStop%5BStopLabel%5D=4200F205801",
-    "referrerPolicy": "no-referrer-when-downgrade",
     "body": JSON.stringify({
       Stops: {
         StopLabel:["4200F205801","4200F205901","4200F206801"] // Tachbrook St (S), Brunswick Inn (N), Cashmore Ave (N)
@@ -41,8 +39,6 @@ function stagecoachApiQuery() {
   }).then(response => response.json());
   let churchBusesSchedulePromise = fetch("https://api.stagecoachbus.com/tis/v3/stop-event-query", {
     "headers": headers,
-    "referrer": "https://www.stagecoachbus.com/bus-stop?busStop%5BGeocode%5D%5BGrid%5D%5Bvalue%5D=WGS84&busStop%5BGeocode%5D%5BLongitude%5D=-1.5291824890766799&busStop%5BGeocode%5D%5BLatitude%5D=52.278104801179374&busStop%5BName%5D=Leamington+Spa%2C+Tachbrook+Street&busStop%5BStopLabel%5D=4200F205801",
-    "referrerPolicy": "no-referrer-when-downgrade",
     "body": JSON.stringify({
       Stops: {
         StopLabel:["4200F226401"] // Church
@@ -70,8 +66,6 @@ function stagecoachApiQuery() {
   }).then(response => response.json());
   let homeBusesMonitorPromise = fetch("https://api.stagecoachbus.com/adc/stop-monitor", {
     "headers": headers,
-    "referrer": "https://www.stagecoachbus.com/bus-stop?busStop%5BGeocode%5D%5BGrid%5D%5Bvalue%5D=WGS84&busStop%5BGeocode%5D%5BLongitude%5D=-1.5291824890766799&busStop%5BGeocode%5D%5BLatitude%5D=52.278104801179374&busStop%5BName%5D=Leamington+Spa%2C+Tachbrook+Street&busStop%5BStopLabel%5D=4200F205801",
-    "referrerPolicy": "no-referrer-when-downgrade",
     "body": JSON.stringify({
       StopMonitorRequest: {
         header: {
@@ -100,8 +94,6 @@ function stagecoachApiQuery() {
   }).then(response => response.json());
   let churchBusesMonitorPromise = fetch("https://api.stagecoachbus.com/adc/stop-monitor", {
     "headers": headers,
-    "referrer": "https://www.stagecoachbus.com/bus-stop?busStop%5BGeocode%5D%5BGrid%5D%5Bvalue%5D=WGS84&busStop%5BGeocode%5D%5BLongitude%5D=-1.5291824890766799&busStop%5BGeocode%5D%5BLatitude%5D=52.278104801179374&busStop%5BName%5D=Leamington+Spa%2C+Tachbrook+Street&busStop%5BStopLabel%5D=4200F205801",
-    "referrerPolicy": "no-referrer-when-downgrade",
     "body": JSON.stringify({
       StopMonitorRequest: {
         header: {
@@ -123,4 +115,26 @@ function stagecoachApiQuery() {
     "credentials": "omit"
   }).then(response => response.json());
   return Promise.all([homeBusesSchedulePromise,churchBusesSchedulePromise,homeBusesMonitorPromise,churchBusesMonitorPromise])
+}
+function stagecoachBusTimetableQuery(route, direction, time, stopCode) {
+  return new Promise((r) => r({})); // TODO: Work out why my buses don't exist
+  fetch("https://api.stagecoachbus.com/adc/estimated-timetable",{
+    "headers": headers,
+    "body": JSON.stringify({
+      EstimatedTimetableRequest: {
+        header: {
+          retailOperation: "",
+          channel: "",
+          ipAddress: ""
+        },
+        service: route,
+        direction: direction.toUpperCase(),
+        originDepartureTime: time,
+        originStopPointLabel: stopCode
+      }
+    }),
+    "method": "POST",
+    "mode": "cors",
+    "credentials": "omit"
+  }).then(response => response.json());
 }
