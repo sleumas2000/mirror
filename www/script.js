@@ -66,6 +66,7 @@ function getBuses() {
     if (homeBusesSchedule.Events && homeBusesSchedule.Events.Event) {
       for (bus of homeBusesSchedule.Events.Event) {
         if (bus.StopLabel === "4200F205801" && bus.Trip.Service.ServiceNumber === "1") continue; // Ignore 1 to south farm from Tachbrook St stop
+        if (bus.StopLabel === "4200F206801" && (bus.Trip.Service.ServiceNumber === "U2" || bus.Trip.Service.ServiceNumber === "U3")) continue; // Ignore U2/3 from Cashmore Ave stop
         homePromises.push(
           stagecoachBusTimetableQuery(bus.Trip.Service.ServiceNumber,bus.Trip.Service.Direction,bus.ScheduledDepartureTime.value,bus.StopLabel).then(
             function (bus) { // This immediately invoked function of bus keeps the bus in the scope
@@ -117,7 +118,6 @@ function getBuses() {
 
     return Promise.all([Promise.all(homePromises),Promise.all(churchPromises),new Promise(function(resolve){resolve(homeBusesMonitor)}),new Promise(function(resolve){resolve(churchBusesMonitor)})])
   }).then(function([homeBuses,churchBuses,homeBusesMonitor,churchBusesMonitor]){
-    console.log(homeBuses,churchBuses);
     localBuses = {home:homeBuses,church:churchBuses};
     if (homeBusesMonitor.stopMonitors && homeBusesMonitor.stopMonitors.stopMonitor) {
       homeLiveBuses = homeBusesMonitor.stopMonitors.stopMonitor.map((monitor) => (monitor.monitoredCalls && monitor.monitoredCalls.monitoredCall ? monitor.monitoredCalls.monitoredCall : [])).flat()
@@ -155,7 +155,7 @@ function getBuses() {
       for (i in busList) {
         let bus = busList[i]
         if (!bus.live && bus.time - new Date() <= 0) {
-          log(busList.splice(i,1))
+          console.log("Removed bus after scheduled departure: ",busList.splice(i,1))
         }
       }
       busList.sort((a,b) => (a.time - b.time))

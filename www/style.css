@@ -194,7 +194,7 @@ li.bus {
     color: grey;
 }
 .bus-time-scheduled {
-    opacity: 50%;
+    opacity: 75%;
 }
 .bus-destination {
     font-size: 3vw;
